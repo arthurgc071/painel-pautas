@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pautas — Economia & Startups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3EFE6; --paper-2:#EAE4D7; --ink:#17140F; --ink-2:#4A443A; --ink-3:#857D6F;
+  --rule:#CFC7B6; --econ:#0E5A3A; --startup:#B4441B; --accent:var(--econ);
+  --serif:"Fraunces", Georgia, serif; --sans:"Schibsted Grotesk", system-ui, sans-serif;
+}
+body[data-frente="STARTUPS"]{--accent:var(--startup)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45}
+a{color:inherit;text-decoration-color:var(--rule);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent);color:var(--accent)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.wrap{max-width:1380px;margin:0 auto;padding:0 28px}
+
+/* ---------- cabeçalho ---------- */
+header{border-bottom:3px double var(--ink);padding:26px 0 0}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.masthead{font-family:var(--serif);font-weight:800;font-size:clamp(44px,6vw,78px);line-height:.9;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 144}
+.masthead em{font-style:italic;font-weight:400;color:var(--accent);transition:color .3s}
+.meta{text-align:right;color:var(--ink-2);font-size:13px}
+.meta strong{color:var(--ink);font-weight:700}
+.meta .warn{color:var(--startup)}
+.bar{display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-top:22px;border-top:1px solid var(--ink);padding:10px 0}
+.tabs{display:flex;gap:26px}
+.tab{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink-3);padding-bottom:2px;border-bottom:3px solid transparent;letter-spacing:-.01em}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.tab small{font-family:var(--sans);font-size:13px;font-weight:500;vertical-align:super;margin-left:3px;color:var(--ink-3)}
+.controls{display:flex;gap:20px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.seg{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.seg button{padding:3px 0;border-bottom:1px solid transparent;color:var(--ink-3)}
+.seg button.on{color:var(--ink);border-color:var(--ink);font-weight:700}
+.search{border:0;border-bottom:1px solid var(--ink);background:transparent;font:inherit;font-size:14px;padding:4px 2px;width:190px;outline:none;color:var(--ink)}
+.search::placeholder{color:var(--ink-3);font-style:italic;font-family:var(--serif)}
+
+/* ---------- funil-resumo ---------- */
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);margin:22px 0 8px;border-bottom:1px solid var(--rule)}
+.f-step{position:relative;padding:4px 18px 14px 0}
+.f-step + .f-step{padding-left:22px;border-left:1px solid var(--rule)}
+.f-num{font-family:var(--serif);font-size:38px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.f-label{font-size:13px;color:var(--ink-2);margin-top:4px}
+.f-bar{height:4px;background:var(--paper-2);margin-top:10px}
+.f-bar i{display:block;height:100%;background:var(--accent);transition:width .5s,background .3s}
+
+/* ---------- histórias ---------- */
+main{padding-bottom:80px}
+.stage-heads{display:grid;grid-template-columns:1.25fr 1fr 1fr 1.25fr;gap:0;position:sticky;top:0;background:var(--paper);z-index:3;border-bottom:1px solid var(--ink);padding:10px 0 8px}
+.stage-heads div{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);padding:0 18px}
+.stage-heads div:first-child{padding-left:0}
+.stage-heads b{color:var(--accent);font-family:var(--serif);font-size:15px;letter-spacing:0;margin-right:6px}
+
+.story{border-bottom:1px solid var(--rule);display:grid;grid-template-columns:1.25fr 1fr 1fr 1.25fr;position:relative}
+.story.used{opacity:.45}
+.story.used:hover{opacity:1}
+.col{padding:22px 18px 22px;position:relative;min-width:0}
+.col:first-child{padding-left:0}
+.col + .col{border-left:1px dashed var(--rule)}
+/* setas do fluxo */
+.col + .col::before{content:"";position:absolute;left:-6px;top:30px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:6px solid var(--accent);transition:border-color .3s}
+.rank{display:flex;align-items:baseline;gap:12px;margin-bottom:8px;font-size:13px;color:var(--ink-3)}
+.rank .n{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:600}
+.score{display:inline-flex;gap:2px;align-items:center}
+.score i{width:7px;height:7px;background:var(--rule);display:block}
+.score i.on{background:var(--accent)}
+.fresh{color:var(--accent);font-weight:700}
+h2.t{font-family:var(--serif);font-weight:600;font-size:23px;line-height:1.15;letter-spacing:-.01em;margin:0 0 10px;font-variation-settings:"opsz" 60}
+.resumo{color:var(--ink-2);margin:0 0 12px}
+.list{list-style:none;margin:0;padding:0}
+.list li{padding:7px 0;border-top:1px solid var(--paper-2);font-size:14px;line-height:1.35}
+.list li:first-child{border-top:0;padding-top:0}
+.src{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.empty{color:var(--ink-3);font-style:italic;font-family:var(--serif);font-size:14px}
+.more{font-size:13px;color:var(--ink-2);border-bottom:1px solid var(--rule);margin-top:6px}
+.more:hover{color:var(--accent);border-color:var(--accent)}
+
+.vid{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start;text-decoration:none}
+.vid img{width:84px;aspect-ratio:16/9;object-fit:cover;background:var(--paper-2);display:block}
+.social{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:13px}
+.social a{text-decoration:none;border-bottom:1px solid var(--ink-3)}
+.social a b{font-weight:700}
+.sub{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin:14px 0 6px}
+.sub:first-child{margin-top:0}
+
+.why{font-family:var(--serif);font-size:16px;line-height:1.35;margin:0 0 4px;font-style:italic}
+.angles{margin:0;padding-left:0;list-style:none;counter-reset:a}
+.angles li{counter-increment:a;padding:5px 0 5px 26px;position:relative;font-size:14px}
+.angles li::before{content:counter(a);position:absolute;left:0;top:4px;font-family:var(--serif);font-weight:600;color:var(--accent);font-size:15px}
+.hook{border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:6px 0;font-size:14px;font-weight:500}
+.tags{font-size:13px;color:var(--ink-2);margin-top:10px}
+.actions{display:flex;gap:18px;margin-top:16px;font-size:13px}
+.actions button{border-bottom:1px solid var(--ink);padding-bottom:1px;font-weight:500}
+.actions button:hover{color:var(--accent);border-color:var(--accent)}
+
+.collapsed .col:not(:first-child) .body{display:none}
+.collapsed .col:not(:first-child) .peek{display:block}
+.peek{display:none;font-size:13px;color:var(--ink-2)}
+.peek strong{font-family:var(--serif);font-size:22px;color:var(--ink);display:block;line-height:1.1}
+.toggle{position:absolute;inset:0;z-index:1}
+.story:not(.collapsed) .toggle{display:none}
+.story a,.story button:not(.toggle){position:relative;z-index:2}
+.collapsed:hover{background:var(--paper-2)}
+
+footer{border-top:3px double var(--ink);padding:18px 0 40px;font-size:13px;color:var(--ink-2)}
+footer details summary{cursor:pointer;font-weight:700;color:var(--ink)}
+.health{columns:3;column-gap:30px;margin-top:10px}
+.health div{break-inside:avoid;padding:3px 0}
+.health .bad{color:var(--startup)}
+.banner{background:var(--ink);color:var(--paper);padding:8px 0;font-size:13px;text-align:center}
+.nothing{padding:60px 0;font-family:var(--serif);font-size:22px;color:var(--ink-3);text-align:center}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+@media (max-width:980px){
+  .wrap{padding:0 18px}
+  .stage-heads{display:none}
+  .story{grid-template-columns:1fr;padding-left:18px;border-left:2px solid var(--accent);margin:16px 0;border-bottom:0}
+  .col{padding:12px 0 12px 0}
+  .col + .col{border-left:0;border-top:1px dashed var(--rule)}
+  .col + .col::before{left:-25px;top:16px;border-left:none;border-top:none;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .col{display:flex;flex-direction:column}
+  .col[data-step]::after{content:attr(data-step);order:-1;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .col:first-child[data-step]::after{display:none}
+  .funnel{grid-template-columns:repeat(2,1fr)}
+  .f-step:nth-child(3){border-left:0;padding-left:0}
+  .health{columns:1}
+  .meta{text-align:left}
+}
+</style>
+</head>
+<body data-frente="ECONOMIA">
+<div id="banner"></div>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <h1 class="masthead">Pautas <em id="mastFrente">da economia</em></h1>
+      <div class="meta" id="meta">Carregando…</div>
+    </div>
+    <div class="bar">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-f="ECONOMIA" aria-selected="true">Economia<small id="cE"></small></button>
+        <button class="tab" role="tab" data-f="STARTUPS" aria-selected="false">Startups<small id="cS"></small></button>
+      </div>
+      <div class="controls">
+        <div class="seg" id="segH">Publicadas há até
+          <button data-h="12">12h</button><button data-h="24">24h</button><button data-h="50" class="on">50h</button>
+        </div>
+        <div class="seg" id="segO">Ordem
+          <button data-o="nota" class="on">potencial</button><button data-o="recente">mais recentes</button>
+        </div>
+        <div class="seg" id="segU">
+          <button data-u="1" class="on">mostrar usadas</button>
+        </div>
+        <input class="search" id="q" placeholder="procurar tema…" aria-label="Procurar">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="funnel" id="funnel" aria-label="Resumo do funil"></section>
+  <div class="stage-heads" aria-hidden="true">
+    <div><b>1</b>A notícia</div><div><b>2</b>Contexto para explicar</div><div><b>3</b>Repercussão nas redes</div><div><b>4</b>Pauta de vídeo</div>
+  </div>
+  <div id="list"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <details>
+      <summary>Situação das fontes</summary>
+      <div class="health" id="health"></div>
+    </details>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const state = { frente:"ECONOMIA", horas:50, ordem:"nota", mostrarUsadas:true, q:"", abertas:new Set(), data:null };
+const store = {
+  get(){ try{ return JSON.parse(localStorage.getItem("pautas_usadas")||"{}") }catch(e){ return {} } },
+  set(v){ try{ localStorage.setItem("pautas_usadas", JSON.stringify(v)) }catch(e){} }
+};
+let usadas = store.get();
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const horasDesde = iso => (Date.now() - new Date(iso).getTime()) / 36e5;
+function idade(iso){
+  if(!iso) return "";
+  const h = horasDesde(iso);
+  if(h < 1) return "há " + Math.max(1, Math.round(h*60)) + " min";
+  if(h < 48) return "há " + Math.round(h) + "h";
+  return "há " + Math.round(h/24) + " dias";
+}
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1600) }
+
+async function load(){
+  try{
+    const r = await fetch("data/news.json?v=" + Date.now());
+    state.data = await r.json();
+  }catch(e){
+    $("#meta").textContent = "Não foi possível carregar os dados.";
+    return;
+  }
+  const d = state.data;
+  if(d.exemplo) $("#banner").innerHTML = '<div class="banner">Dados de exemplo — o painel real aparece depois da primeira atualização automática.</div>';
+  const h = horasDesde(d.gerado_em);
+  $("#meta").innerHTML = `Atualizado <strong>${idade(d.gerado_em)}</strong><br>` +
+    (h > 8 ? '<span class="warn">Atenção: sem atualização há mais de 8h</span>' :
+      (d.modo === "simples" ? '<span class="warn">Modo simples: sem chave do Claude, sem ângulos de vídeo</span>' : 'Atualiza sozinho a cada 4 horas'));
+  $("#cE").textContent = (d.frentes.ECONOMIA||[]).length;
+  $("#cS").textContent = (d.frentes.STARTUPS||[]).length;
+  $("#health").innerHTML = (d.fontes||[]).map(f =>
+    `<div class="${f.ok && f.itens ? "" : "bad"}">${esc(f.nome)} <span style="color:var(--ink-3)">· ${f.frente === "ECONOMIA" ? "Economia" : "Startups"}</span> — ${f.ok ? f.itens + " matérias" : "erro"}</div>`).join("");
+  render();
+}
+
+function visiveis(){
+  let ss = (state.data.frentes[state.frente] || []).slice();
+  ss = ss.filter(s => horasDesde(s.ultima_publicacao) <= state.horas);
+  if(!state.mostrarUsadas) ss = ss.filter(s => !usadas[s.id]);
+  if(state.q){
+    const q = state.q.toLowerCase();
+    ss = ss.filter(s => JSON.stringify([s.titulo,s.resumo,s.hashtags,s.materias.map(m=>m.titulo)]).toLowerCase().includes(q));
+  }
+  if(state.ordem === "recente") ss.sort((a,b) => b.ultima_publicacao.localeCompare(a.ultima_publicacao));
+  else ss.sort((a,b) => b.nota - a.nota || b.ultima_publicacao.localeCompare(a.ultima_publicacao));
+  return ss;
+}
+
+function renderFunnel(ss){
+  const nMat = ss.reduce((a,s)=>a+s.materias.length,0);
+  const nCtx = ss.filter(s=>s.contexto.length).length;
+  const nRep = ss.filter(s=>s.videos.length || s.buscas_sociais.length).length;
+  const nPauta = ss.filter(s=>s.angulos.length && !usadas[s.id]).length;
+  const max = Math.max(nMat,1);
+  const steps = [
+    [nMat, "matérias novas agrupadas em " + ss.length + " histórias"],
+    [nCtx, "histórias com material de contexto"],
+    [nRep, "com vídeos e buscas nas redes"],
+    [nPauta, "pautas prontas ainda não usadas"]
+  ];
+  $("#funnel").innerHTML = steps.map(([n,l],i) =>
+    `<div class="f-step"><div class="f-num">${n}</div><div class="f-label">${l}</div><div class="f-bar"><i style="width:${i===0?100:Math.round(n/Math.max(ss.length,1)*100)}%"></i></div></div>`).join("");
+}
+
+function li(m){ return `<li><a href="${esc(m.link)}" target="_blank" rel="noopener">${esc(m.titulo)}</a><span class="src">${esc(m.fonte)}${m.publicado ? " · " + idade(m.publicado) : ""}</span></li>` }
+
+function storyHTML(s, i){
+  const aberta = state.abertas.has(s.id);
+  const fresh = horasDesde(s.ultima_publicacao) < 6;
+  const fontes = [...new Set(s.materias.map(m=>m.fonte))];
+  const mats = s.materias.slice().reverse();
+  const score = Array.from({length:10},(_,k)=>`<i class="${k < s.nota ? "on":""}"></i>`).join("");
+  const vids = s.videos.map(v => `<li><a class="${v.thumb ? "vid" : ""}" href="${esc(v.link)}" target="_blank" rel="noopener">${v.thumb ? `<img src="${esc(v.thumb)}" alt="" loading="lazy">` : ""}<span>${esc(v.titulo)}<span class="src">${esc(v.canal)} · ${idade(v.publicado)}</span></span></a></li>`).join("");
+  const social = s.buscas_sociais.map(b => `<a href="${esc(b.link)}" target="_blank" rel="noopener"><b>${esc(b.rede)}</b> ${esc(b.termo)}</a>`).join("");
+  return `
+  <article class="story ${aberta ? "" : "collapsed"} ${usadas[s.id] ? "used" : ""}" data-id="${s.id}">
+    <div class="col" data-step="A notícia">
+      <div class="rank"><span class="n">${String(i+1).padStart(2,"0")}</span><span class="score" title="Potencial de vídeo: ${s.nota}/10">${score}</span><span class="${fresh?"fresh":""}">${idade(s.ultima_publicacao)}</span></div>
+      <h2 class="t">${esc(s.titulo)}</h2>
+      ${s.resumo ? `<p class="resumo">${esc(s.resumo)}</p>` : ""}
+      ${aberta ? `<div class="sub">${s.materias.length} ${s.materias.length>1?"matérias":"matéria"} · ${fontes.length} ${fontes.length>1?"veículos":"veículo"}</div><ul class="list">${mats.map(li).join("")}</ul>`
+               : `<div class="src">${s.materias.length} ${s.materias.length>1?"matérias":"matéria"} em ${esc(fontes.slice(0,3).join(", "))}${fontes.length>3?"…":""}</div>`}
+    </div>
+    <div class="col" data-step="Contexto">
+      <div class="peek"><strong>${s.contexto.length}</strong>leituras de contexto</div>
+      <div class="body">${s.contexto.length ? `<ul class="list">${s.contexto.map(li).join("")}</ul>` : `<p class="empty">Nada encontrado ainda.</p>`}</div>
+    </div>
+    <div class="col" data-step="Repercussão">
+      <div class="peek"><strong>${s.videos.length || s.buscas_sociais.length}</strong>${s.videos.length ? "vídeos encontrados" : "buscas prontas nas redes"}</div>
+      <div class="body">
+        ${s.videos.length ? `<div class="sub">YouTube, últimas semanas</div><ul class="list">${vids}</ul>` : ""}
+        <div class="sub">Buscar o tema em</div>
+        <div class="social" style="border:0;margin:0;padding:0">${social}</div>
+      </div>
+    </div>
+    <div class="col" data-step="Pauta">
+      <div class="peek">${s.por_que_importa ? `<span class="why" style="font-size:15px">${esc(s.por_que_importa)}</span>` : `<strong>${s.angulos.length}</strong>ângulos sugeridos`}</div>
+      <div class="body">
+        ${s.por_que_importa ? `<p class="why">${esc(s.por_que_importa)}</p>` : ""}
+        ${s.angulos.length ? `<div class="sub">Ângulos</div><ol class="angles">${s.angulos.map(a=>`<li>${esc(a)}</li>`).join("")}</ol>` : `<p class="empty">Ângulos aparecem quando a chave do Claude estiver configurada.</p>`}
+        ${s.ganchos.length ? `<div class="sub">Ganchos de abertura</div>${s.ganchos.map(g=>`<div class="hook">${esc(g)}</div>`).join("")}` : ""}
+        ${s.perguntas && s.perguntas.length ? `<div class="sub">O público vai perguntar</div><ul class="list">${s.perguntas.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>` : ""}
+        ${s.hashtags.length ? `<div class="tags">${s.hashtags.map(t=>"#"+esc(t)).join("  ")}</div>` : ""}
+        <div class="actions">
+          <button data-act="copy">Copiar briefing</button>
+          <button data-act="used">${usadas[s.id] ? "Desmarcar" : "Marcar como usada"}</button>
+          <button data-act="close">Fechar</button>
+        </div>
+      </div>
+    </div>
+    <button class="toggle" aria-label="Abrir história" data-act="open"></button>
+  </article>`;
+}
+
+function render(){
+  document.body.dataset.frente = state.frente;
+  $("#mastFrente").textContent = state.frente === "ECONOMIA" ? "da economia" : "de startups";
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.f === state.frente));
+  const ss = visiveis();
+  renderFunnel(ss);
+  if(ss.length && state.abertas.size === 0) state.abertas.add(ss[0].id);
+  $("#list").innerHTML = ss.length ? ss.map(storyHTML).join("") : `<div class="nothing">Nenhuma história com esses filtros.</div>`;
+}
+
+function briefing(s){
+  return [
+    s.titulo, "", s.resumo, "",
+    s.por_que_importa ? "Por que importa: " + s.por_que_importa + "\n" : "",
+    s.angulos.length ? "Ângulos:\n" + s.angulos.map((a,i)=>`${i+1}. ${a}`).join("\n") + "\n" : "",
+    s.ganchos.length ? "Ganchos:\n" + s.ganchos.map(g=>"- " + g).join("\n") + "\n" : "",
+    "Fontes:\n" + s.materias.map(m=>`- ${m.titulo} (${m.fonte}) ${m.link}`).join("\n"),
+    s.contexto.length ? "\nContexto:\n" + s.contexto.map(m=>`- ${m.titulo} (${m.fonte}) ${m.link}`).join("\n") : "",
+    s.hashtags.length ? "\n" + s.hashtags.map(t=>"#"+t).join(" ") : ""
+  ].filter(x => x !== null).join("\n").replace(/\n{3,}/g,"\n\n");
+}
+
+document.addEventListener("click", e => {
+  const tab = e.target.closest(".tab");
+  if(tab){ state.frente = tab.dataset.f; state.abertas.clear(); render(); return; }
+  const b = e.target.closest("[data-h],[data-o],[data-u]");
+  if(b){
+    const seg = b.parentElement;
+    if(b.dataset.h){ state.horas = +b.dataset.h; seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x===b)); }
+    if(b.dataset.o){ state.ordem = b.dataset.o; seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on", x===b)); }
+    if(b.dataset.u){ state.mostrarUsadas = !state.mostrarUsadas; b.classList.toggle("on", state.mostrarUsadas); }
+    render(); return;
+  }
+  const act = e.target.closest("[data-act]");
+  if(!act) return;
+  const art = act.closest(".story"); const id = art.dataset.id;
+  const s = state.data.frentes[state.frente].find(x => x.id === id);
+  if(act.dataset.act === "open"){ state.abertas.add(id); render(); }
+  if(act.dataset.act === "close"){ state.abertas.delete(id); render(); }
+  if(act.dataset.act === "used"){ if(usadas[id]) delete usadas[id]; else usadas[id] = Date.now(); store.set(usadas); render(); }
+  if(act.dataset.act === "copy"){
+    const txt = briefing(s);
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast("Briefing copiado"), ()=>toast("Não foi possível copiar"));
+  }
+});
+$("#q").addEventListener("input", e => { state.q = e.target.value.trim(); render(); });
+load();
+setInterval(load, 15 * 60 * 1000); // recarrega sozinho se a aba ficar aberta
+</script>
+</body>
+</html>

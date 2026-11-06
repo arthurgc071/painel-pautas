@@ -1,0 +1,406 @@
+{
+ "exemplo": true,
+ "gerado_em": "2026-11-06T01:25:56.238901+00:00",
+ "janela_horas": 50,
+ "modo": "claude",
+ "frentes": {
+  "ECONOMIA": [
+   {
+    "id": "85f573332a",
+    "frente": "ECONOMIA",
+    "titulo": "[Exemplo] Juros ficam parados e mercado passa a apostar em corte só em 2027",
+    "resumo": "Na história de exemplo, o comitê de política monetária mantém a taxa básica e o comunicado reforça cautela com a inflação de serviços. Os juros futuros sobem logo após a decisão.",
+    "por_que_importa": "Juro alto por mais tempo encarece financiamento e cartão, mas mantém a renda fixa atraente para quem investe.",
+    "nota": 9,
+    "angulos": [
+     "Explicar em 60s o que é inflação de serviços e por que ela trava os juros",
+     "Simular uma parcela de financiamento com e sem corte de juros",
+     "Comparar renda fixa x poupança com juros nesse nível"
+    ],
+    "ganchos": [
+     "Seu financiamento não vai ficar mais barato tão cedo. Eu te explico por quê.",
+     "Os juros ficaram parados — e isso pode ser bom para você."
+    ],
+    "perguntas": [
+     "Quando os juros vão cair?",
+     "Vale a pena investir em renda fixa agora?"
+    ],
+    "hashtags": [
+     "juros",
+     "economia",
+     "rendafixa"
+    ],
+    "busca_contexto": "juros parados hoje",
+    "busca_social": "juros parados hoje",
+    "primeira_publicacao": "2026-11-05T20:25:56.238901+00:00",
+    "ultima_publicacao": "2026-11-05T23:25:56.238901+00:00",
+    "materias": [
+     {
+      "titulo": "Comitê mantém juros e cita inflação de serviços",
+      "link": "https://exemplo.com/0",
+      "fonte": "Veículo A",
+      "publicado": "2026-11-05T23:25:56.238901+00:00"
+     },
+     {
+      "titulo": "O que muda no seu bolso com os juros parados",
+      "link": "https://exemplo.com/1",
+      "fonte": "Veículo B",
+      "publicado": "2026-11-05T22:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Juros futuros sobem após comunicado",
+      "link": "https://exemplo.com/2",
+      "fonte": "Veículo C",
+      "publicado": "2026-11-05T20:25:56.238901+00:00"
+     }
+    ],
+    "contexto": [
+     {
+      "titulo": "Entenda como a taxa básica afeta o crédito",
+      "link": "https://exemplo.com/c0",
+      "fonte": "Veículo D",
+      "publicado": "2026-11-01T01:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Por que a inflação de serviços é tão difícil de baixar",
+      "link": "https://exemplo.com/c1",
+      "fonte": "Veículo E",
+      "publicado": "2026-10-24T13:25:56.238901+00:00"
+     }
+    ],
+    "videos": [
+     {
+      "titulo": "Juros parados: o que fazer com seu dinheiro",
+      "canal": "Canal Exemplo",
+      "link": "https://youtube.com",
+      "thumb": null,
+      "publicado": "2026-11-05T05:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Explicando o comunicado em 5 minutos",
+      "canal": "Outro Canal",
+      "link": "https://youtube.com",
+      "thumb": null,
+      "publicado": "2026-11-04T19:25:56.238901+00:00"
+     }
+    ],
+    "buscas_sociais": [
+     {
+      "rede": "TikTok",
+      "termo": "juros parados hoje",
+      "link": "https://www.tiktok.com/search?q=juros+parados+hoje"
+     },
+     {
+      "rede": "Instagram",
+      "termo": "#juros",
+      "link": "https://www.instagram.com/explore/tags/juros/"
+     },
+     {
+      "rede": "YouTube",
+      "termo": "juros parados hoje",
+      "link": "https://www.youtube.com/results?search_query=juros+parados+hoje"
+     },
+     {
+      "rede": "X",
+      "termo": "juros parados hoje",
+      "link": "https://x.com/search?f=live&q=juros+parados+hoje"
+     }
+    ]
+   },
+   {
+    "id": "f6d841c886",
+    "frente": "ECONOMIA",
+    "titulo": "[Exemplo] Inflação de outubro vem abaixo do esperado puxada por energia",
+    "resumo": "Na história de exemplo, o índice oficial desacelera no mês com a queda na conta de luz, enquanto alimentos seguem pressionados.",
+    "por_que_importa": "Inflação menor ajuda o poder de compra, mas a composição importa: comida ainda pesa no orçamento.",
+    "nota": 7,
+    "angulos": [
+     "Mostrar o carrinho de supermercado de hoje vs. há um ano",
+     "Explicar por que inflação baixa não significa preços caindo"
+    ],
+    "ganchos": [
+     "A inflação caiu. Então por que o mercado continua caro?"
+    ],
+    "perguntas": [
+     "O que é deflação?"
+    ],
+    "hashtags": [
+     "inflacao",
+     "ipca"
+    ],
+    "busca_contexto": "inflação outubro",
+    "busca_social": "inflação outubro",
+    "primeira_publicacao": "2026-11-05T05:25:56.238901+00:00",
+    "ultima_publicacao": "2026-11-05T07:25:56.238901+00:00",
+    "materias": [
+     {
+      "titulo": "Inflação desacelera em outubro",
+      "link": "https://exemplo.com/0",
+      "fonte": "Veículo A",
+      "publicado": "2026-11-05T07:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Conta de luz derruba índice do mês",
+      "link": "https://exemplo.com/1",
+      "fonte": "Veículo F",
+      "publicado": "2026-11-05T05:25:56.238901+00:00"
+     }
+    ],
+    "contexto": [
+     {
+      "titulo": "Como o índice de inflação é calculado",
+      "link": "https://exemplo.com/c0",
+      "fonte": "Veículo G",
+      "publicado": "2026-10-16T05:25:56.238901+00:00"
+     }
+    ],
+    "videos": [],
+    "buscas_sociais": [
+     {
+      "rede": "TikTok",
+      "termo": "inflação outubro",
+      "link": "https://www.tiktok.com/search?q=infla%C3%A7%C3%A3o+outubro"
+     },
+     {
+      "rede": "Instagram",
+      "termo": "#inflacao",
+      "link": "https://www.instagram.com/explore/tags/inflacao/"
+     },
+     {
+      "rede": "YouTube",
+      "termo": "inflação outubro",
+      "link": "https://www.youtube.com/results?search_query=infla%C3%A7%C3%A3o+outubro"
+     },
+     {
+      "rede": "X",
+      "termo": "inflação outubro",
+      "link": "https://x.com/search?f=live&q=infla%C3%A7%C3%A3o+outubro"
+     }
+    ]
+   },
+   {
+    "id": "1409ebdf1f",
+    "frente": "ECONOMIA",
+    "titulo": "[Exemplo] Governo apresenta proposta de revisão de gastos obrigatórios",
+    "resumo": "Na história de exemplo, a equipe econômica envia ao Congresso medidas para conter o crescimento de despesas obrigatórias.",
+    "por_que_importa": "",
+    "nota": 6,
+    "angulos": [],
+    "ganchos": [],
+    "perguntas": [],
+    "hashtags": [
+     "contaspublicas"
+    ],
+    "busca_contexto": "revisão de gastos",
+    "busca_social": "revisão de gastos",
+    "primeira_publicacao": "2026-11-04T18:25:56.238901+00:00",
+    "ultima_publicacao": "2026-11-04T18:25:56.238901+00:00",
+    "materias": [
+     {
+      "titulo": "Proposta de revisão de gastos chega ao Congresso",
+      "link": "https://exemplo.com/0",
+      "fonte": "Veículo B",
+      "publicado": "2026-11-04T18:25:56.238901+00:00"
+     }
+    ],
+    "contexto": [],
+    "videos": [],
+    "buscas_sociais": [
+     {
+      "rede": "TikTok",
+      "termo": "revisão de gastos",
+      "link": "https://www.tiktok.com/search?q=revis%C3%A3o+de+gastos"
+     },
+     {
+      "rede": "Instagram",
+      "termo": "#contaspublicas",
+      "link": "https://www.instagram.com/explore/tags/contaspublicas/"
+     },
+     {
+      "rede": "YouTube",
+      "termo": "revisão de gastos",
+      "link": "https://www.youtube.com/results?search_query=revis%C3%A3o+de+gastos"
+     },
+     {
+      "rede": "X",
+      "termo": "revisão de gastos",
+      "link": "https://x.com/search?f=live&q=revis%C3%A3o+de+gastos"
+     }
+    ]
+   }
+  ],
+  "STARTUPS": [
+   {
+    "id": "1f113a0492",
+    "frente": "STARTUPS",
+    "titulo": "[Exemplo] Fintech de crédito para pequenas empresas capta rodada série B",
+    "resumo": "Na história de exemplo, uma fintech que empresta para PMEs levanta uma série B liderada por um fundo estrangeiro e planeja dobrar a carteira.",
+    "por_que_importa": "Mostra que ainda há dinheiro para fintechs com lucro à vista, mesmo com o mercado de venture mais seletivo.",
+    "nota": 8,
+    "angulos": [
+     "Explicar as rodadas (pré-seed até série C) usando essa empresa como caso",
+     "Por que crédito para PME é um mercado tão grande no Brasil"
+    ],
+    "ganchos": [
+     "Essa startup empresta dinheiro para quem banco nenhum quer emprestar."
+    ],
+    "perguntas": [
+     "O que o fundo ganha com isso?"
+    ],
+    "hashtags": [
+     "startups",
+     "fintech",
+     "venturecapital"
+    ],
+    "busca_contexto": "fintech série B",
+    "busca_social": "fintech série B",
+    "primeira_publicacao": "2026-11-05T19:25:56.238901+00:00",
+    "ultima_publicacao": "2026-11-05T21:25:56.238901+00:00",
+    "materias": [
+     {
+      "titulo": "Fintech de crédito a PMEs levanta série B",
+      "link": "https://exemplo.com/0",
+      "fonte": "Veículo H",
+      "publicado": "2026-11-05T21:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Fundo estrangeiro lidera rodada em fintech brasileira",
+      "link": "https://exemplo.com/1",
+      "fonte": "Veículo I",
+      "publicado": "2026-11-05T19:25:56.238901+00:00"
+     }
+    ],
+    "contexto": [
+     {
+      "titulo": "O que é uma rodada série B, explicado",
+      "link": "https://exemplo.com/c0",
+      "fonte": "Veículo J",
+      "publicado": "2026-09-29T13:25:56.238901+00:00"
+     },
+     {
+      "titulo": "Venture capital no Brasil: o ano em números",
+      "link": "https://exemplo.com/c1",
+      "fonte": "Veículo K",
+      "publicado": "2026-10-20T09:25:56.238901+00:00"
+     }
+    ],
+    "videos": [
+     {
+      "titulo": "Como startups levantam dinheiro",
+      "canal": "Canal Exemplo",
+      "link": "https://youtube.com",
+      "thumb": null,
+      "publicado": "2026-11-01T21:25:56.238901+00:00"
+     }
+    ],
+    "buscas_sociais": [
+     {
+      "rede": "TikTok",
+      "termo": "fintech série B",
+      "link": "https://www.tiktok.com/search?q=fintech+s%C3%A9rie+B"
+     },
+     {
+      "rede": "Instagram",
+      "termo": "#startups",
+      "link": "https://www.instagram.com/explore/tags/startups/"
+     },
+     {
+      "rede": "YouTube",
+      "termo": "fintech série B",
+      "link": "https://www.youtube.com/results?search_query=fintech+s%C3%A9rie+B"
+     },
+     {
+      "rede": "X",
+      "termo": "fintech série B",
+      "link": "https://x.com/search?f=live&q=fintech+s%C3%A9rie+B"
+     }
+    ]
+   },
+   {
+    "id": "992bc5d996",
+    "frente": "STARTUPS",
+    "titulo": "[Exemplo] Healthtech de telemedicina compra concorrente e mira o interior",
+    "resumo": "Na história de exemplo, a aquisição junta duas plataformas e o foco passa a ser cidades sem especialistas.",
+    "por_que_importa": "Consolidação é sinal de setor amadurecendo; para o usuário, pode significar mais acesso — ou menos opções.",
+    "nota": 7,
+    "angulos": [
+     "Case: por que comprar um concorrente em vez de crescer sozinho"
+    ],
+    "ganchos": [
+     "Por que uma startup gastaria milhões para comprar a rival?"
+    ],
+    "perguntas": [],
+    "hashtags": [
+     "healthtech",
+     "startups"
+    ],
+    "busca_contexto": "telemedicina aquisição",
+    "busca_social": "telemedicina aquisição",
+    "primeira_publicacao": "2026-11-05T11:25:56.238901+00:00",
+    "ultima_publicacao": "2026-11-05T11:25:56.238901+00:00",
+    "materias": [
+     {
+      "titulo": "Healthtech compra rival de telemedicina",
+      "link": "https://exemplo.com/0",
+      "fonte": "Veículo H",
+      "publicado": "2026-11-05T11:25:56.238901+00:00"
+     }
+    ],
+    "contexto": [
+     {
+      "titulo": "Telemedicina depois da pandemia",
+      "link": "https://exemplo.com/c0",
+      "fonte": "Veículo L",
+      "publicado": "2026-08-14T17:25:56.238901+00:00"
+     }
+    ],
+    "videos": [],
+    "buscas_sociais": [
+     {
+      "rede": "TikTok",
+      "termo": "telemedicina aquisição",
+      "link": "https://www.tiktok.com/search?q=telemedicina+aquisi%C3%A7%C3%A3o"
+     },
+     {
+      "rede": "Instagram",
+      "termo": "#healthtech",
+      "link": "https://www.instagram.com/explore/tags/healthtech/"
+     },
+     {
+      "rede": "YouTube",
+      "termo": "telemedicina aquisição",
+      "link": "https://www.youtube.com/results?search_query=telemedicina+aquisi%C3%A7%C3%A3o"
+     },
+     {
+      "rede": "X",
+      "termo": "telemedicina aquisição",
+      "link": "https://x.com/search?f=live&q=telemedicina+aquisi%C3%A7%C3%A3o"
+     }
+    ]
+   }
+  ]
+ },
+ "fontes": [
+  {
+   "nome": "Valor Econômico",
+   "frente": "ECONOMIA",
+   "ok": true,
+   "itens": 42,
+   "erro": null
+  },
+  {
+   "nome": "InfoMoney",
+   "frente": "ECONOMIA",
+   "ok": true,
+   "itens": 61,
+   "erro": null
+  },
+  {
+   "nome": "NeoFeed",
+   "frente": "STARTUPS",
+   "ok": false,
+   "itens": 0,
+   "erro": "timeout"
+  }
+ ]
+}

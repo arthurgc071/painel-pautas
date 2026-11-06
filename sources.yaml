@@ -1,0 +1,45 @@
+# Fontes do painel. Para adicionar uma fonte, copie uma linha e troque os dados.
+#
+# Dois tipos de fonte:
+#   rss:    o endereço do feed RSS do site
+#   google: uma busca no Google News (funciona para qualquer site, mesmo sem RSS)
+#           use "site:dominio.com.br" para puxar só de um veículo
+
+janela_horas: 50          # notícias mais antigas que isso são descartadas
+max_historias_por_frente: 15   # quantas histórias aparecem em cada frente
+
+ECONOMIA:
+  - nome: Valor Econômico
+    google: "site:valor.globo.com"
+  - nome: InfoMoney
+    rss: https://www.infomoney.com.br/feed/
+  - nome: Exame Economia
+    google: "site:exame.com economia"
+  - nome: Folha Mercado
+    google: "site:folha.uol.com.br/mercado"
+  - nome: Estadão Economia
+    google: "site:estadao.com.br/economia"
+  - nome: Bloomberg Línea
+    google: "site:bloomberglinea.com.br"
+  - nome: Brazil Journal
+    google: "site:braziljournal.com"
+  - nome: Google News - Economia BR
+    google: "Selic OR inflação OR IPCA OR Copom OR PIB OR câmbio OR Ibovespa"
+
+STARTUPS:
+  - nome: NeoFeed
+    google: "site:neofeed.com.br"
+  - nome: Startups.com.br
+    rss: https://startups.com.br/feed/
+  - nome: Pipeline (Valor)
+    google: "site:pipelinevalor.globo.com"
+  - nome: Exame Inovação
+    google: "site:exame.com startups OR inovação"
+  - nome: Brazil Journal - tech
+    google: "site:braziljournal.com startup OR tecnologia"
+  - nome: TechCrunch
+    rss: https://techcrunch.com/feed/
+  - nome: Google News - Startups BR
+    google: "startup rodada OR aporte OR \"série A\" OR unicórnio OR fintech"
+  - nome: Google News - IA e tech
+    google: "inteligência artificial empresa lançamento OR OpenAI OR Anthropic OR Nvidia"
