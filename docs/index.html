@@ -108,6 +108,18 @@ h2.t{font-family:var(--serif);font-weight:600;font-size:23px;line-height:1.15;le
 .story a,.story button:not(.toggle){position:relative;z-index:2}
 .collapsed:hover{background:var(--paper-2)}
 
+.raiox{margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid var(--rule)}
+.raiox .emp{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 8px}
+.raiox dl{margin:0;display:grid;grid-template-columns:1fr;gap:8px}
+.raiox dt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+.raiox dd{margin:2px 0 0;font-size:14px}
+.raiox .check{font-size:13px;color:var(--ink-2);margin-top:10px}
+.raiox .check li{padding:2px 0}
+.raiox .warn-ia{font-size:12px;color:var(--ink-3);font-style:italic;font-family:var(--serif);margin-top:8px}
+.roteiro{margin:0;padding:0;list-style:none;counter-reset:r}
+.roteiro li{counter-increment:r;padding:6px 0 6px 30px;position:relative;font-size:14px;border-top:1px solid var(--paper-2)}
+.roteiro li:first-child{border-top:0}
+.roteiro li::before{content:counter(r,decimal-leading-zero);position:absolute;left:0;top:6px;font-family:var(--serif);font-weight:600;color:var(--accent);font-size:14px}
 footer{border-top:3px double var(--ink);padding:18px 0 40px;font-size:13px;color:var(--ink-2)}
 footer details summary{cursor:pointer;font-weight:700;color:var(--ink)}
 .health{columns:3;column-gap:30px;margin-top:10px}
@@ -254,6 +266,19 @@ function renderFunnel(ss){
 
 function li(m){ return `<li><a href="${esc(m.link)}" target="_blank" rel="noopener">${esc(m.titulo)}</a><span class="src">${esc(m.fonte)}${m.publicado ? " · " + idade(m.publicado) : ""}</span></li>` }
 
+function raioX(s){
+  const r = s.raio_x || {};
+  if(!s.empresa && !Object.keys(r).length) return "";
+  const campos = [["O que faz", r.o_que_faz], ["Como funciona", r.como_funciona], ["Como ganha dinheiro", r.como_ganha_dinheiro], ["O momento", r.o_momento]].filter(([,v]) => v);
+  const checar = (r.a_checar || []).filter(Boolean);
+  return `<div class="raiox">
+    ${s.empresa ? `<p class="emp">Raio-X: ${esc(s.empresa)}</p>` : ""}
+    <dl>${campos.map(([k,v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+    ${checar.length ? `<div class="sub" style="margin-top:12px">Confirmar antes de gravar</div><ul class="list check">${checar.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+    <p class="warn-ia">Gerado pela IA a partir das manchetes. Confira nas fontes.</p>
+  </div>`;
+}
+
 function storyHTML(s, i){
   const aberta = state.abertas.has(s.id);
   const fresh = horasDesde(s.ultima_publicacao) < 6;
@@ -272,8 +297,8 @@ function storyHTML(s, i){
                : `<div class="src">${s.materias.length} ${s.materias.length>1?"matérias":"matéria"} em ${esc(fontes.slice(0,3).join(", "))}${fontes.length>3?"…":""}</div>`}
     </div>
     <div class="col" data-step="Contexto">
-      <div class="peek"><strong>${s.contexto.length}</strong>leituras de contexto</div>
-      <div class="body">${s.contexto.length ? `<ul class="list">${s.contexto.map(li).join("")}</ul>` : `<p class="empty">Nada encontrado ainda.</p>`}</div>
+      <div class="peek">${s.empresa ? `<strong>${esc(s.empresa)}</strong>raio-x e ${s.contexto.length} leituras sobre a empresa` : `<strong>${s.contexto.length}</strong>leituras de contexto`}</div>
+      <div class="body">${raioX(s)}${s.contexto.length ? `${s.empresa ? `<div class="sub">Para entender a empresa</div>` : ""}<ul class="list">${s.contexto.map(li).join("")}</ul>` : `<p class="empty">Nada encontrado ainda.</p>`}</div>
     </div>
     <div class="col" data-step="Repercussão">
       <div class="peek"><strong>${s.videos.length || s.buscas_sociais.length}</strong>${s.videos.length ? "vídeos encontrados" : "buscas prontas nas redes"}</div>
@@ -288,6 +313,7 @@ function storyHTML(s, i){
       <div class="body">
         ${s.por_que_importa ? `<p class="why">${esc(s.por_que_importa)}</p>` : ""}
         ${s.angulos.length ? `<div class="sub">Ângulos</div><ol class="angles">${s.angulos.map(a=>`<li>${esc(a)}</li>`).join("")}</ol>` : `<p class="empty">Ângulos aparecem quando a chave do Claude estiver configurada.</p>`}
+        ${s.estrutura_video && s.estrutura_video.length ? `<div class="sub">Estrutura do vídeo</div><ol class="roteiro">${s.estrutura_video.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>` : ""}
         ${s.ganchos.length ? `<div class="sub">Ganchos de abertura</div>${s.ganchos.map(g=>`<div class="hook">${esc(g)}</div>`).join("")}` : ""}
         ${s.perguntas && s.perguntas.length ? `<div class="sub">O público vai perguntar</div><ul class="list">${s.perguntas.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>` : ""}
         ${s.hashtags.length ? `<div class="tags">${s.hashtags.map(t=>"#"+esc(t)).join("  ")}</div>` : ""}
@@ -316,6 +342,8 @@ function briefing(s){
   return [
     s.titulo, "", s.resumo, "",
     s.por_que_importa ? "Por que importa: " + s.por_que_importa + "\n" : "",
+    s.empresa ? "RAIO-X: " + s.empresa + "\n" + [["O que faz","o_que_faz"],["Como funciona","como_funciona"],["Como ganha dinheiro","como_ganha_dinheiro"],["O momento","o_momento"]].filter(([,k])=>(s.raio_x||{})[k]).map(([l,k])=>`- ${l}: ${s.raio_x[k]}`).join("\n") + ((s.raio_x||{}).a_checar||[]).map(c=>"\n- [CONFIRMAR] " + c).join("") + "\n" : "",
+    s.estrutura_video && s.estrutura_video.length ? "Estrutura do vídeo:\n" + s.estrutura_video.map((x,i)=>`${i+1}. ${x}`).join("\n") + "\n" : "",
     s.angulos.length ? "Ângulos:\n" + s.angulos.map((a,i)=>`${i+1}. ${a}`).join("\n") + "\n" : "",
     s.ganchos.length ? "Ganchos:\n" + s.ganchos.map(g=>"- " + g).join("\n") + "\n" : "",
     "Fontes:\n" + s.materias.map(m=>`- ${m.titulo} (${m.fonte}) ${m.link}`).join("\n"),
