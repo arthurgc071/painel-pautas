@@ -171,7 +171,9 @@ def dedupe(items: list[dict]) -> list[dict]:
 
 # ---------------------------------------------------------------- 2. agrupamento + Claude
 
-PROMPT = """Você é editor de pautas de um criador de conteúdo brasileiro que faz vídeos curtos \
+# ---- Etapa 1: escolher as histórias (resposta curta)
+
+PROMPT_SELECAO = """Você é editor de pautas de um criador de conteúdo brasileiro que faz vídeos curtos \
 (Reels, TikTok, Shorts) explicando {frente_desc}.
 
 Abaixo estão matérias publicadas nas últimas {janela} horas. Cada linha tem um código entre colchetes.
@@ -181,26 +183,30 @@ Abaixo estão matérias publicadas nas últimas {janela} horas. Cada linha tem u
 Tarefa:
 1. Agrupe as matérias que tratam do MESMO fato em uma "história". Matérias sem relação ficam sozinhas.
 2. Escolha as até {maximo} histórias com MAIOR potencial de virar vídeo. {criterios}
-3. Para cada história escolhida, escreva em português do Brasil.
 
-Entregue o resultado chamando a ferramenta "salvar_historias". Cada história segue este modelo:
-{{"historias": [
-  {{
-    "codigos": ["e3", "e17"],
-    "titulo": "título curto e claro da história, máx. 90 caracteres",
-    "resumo": "2 a 3 frases explicando o fato, para quem não leu nada",
-    "por_que_importa": "1 a 2 frases sobre o impacto",
-    "nota": 8,
-    "angulos": ["ângulo de vídeo 1", "ângulo 2", "ângulo 3"],
-    "ganchos": ["frase de abertura que prende nos 3 primeiros segundos", "outra opção"],
-    "perguntas": ["dúvida que o público provavelmente tem", "outra dúvida"],
-    "busca_contexto": "{dica_busca}",
-    "busca_social": "termo curto de 2 a 4 palavras para buscar vídeos sobre o tema",
-    "hashtags": ["tag1", "tag2", "tag3"]{campos_extras}
-  }}
-]}}
+Entregue chamando a ferramenta "selecionar_historias". Para cada história: os códigos das matérias, \
+um título curto e claro (máx. 90 caracteres), a nota de 1 a 10 para o potencial de vídeo{campo_empresa}."""
 
-"nota" vai de 1 a 10 e mede o potencial de virar um bom vídeo. Hashtags sem o símbolo #, sem espaços.{regras_extras}"""
+# ---- Etapa 2: montar a pauta de UMA história (resposta curta, uma chamada por história)
+
+PROMPT_PAUTA = """Você é editor de pautas de um criador de conteúdo brasileiro que faz vídeos curtos \
+(Reels, TikTok, Shorts) explicando {frente_desc}.
+
+História: {titulo}
+
+Matérias publicadas sobre ela:
+{materias}
+
+Monte a pauta de vídeo em português do Brasil e entregue chamando a ferramenta "montar_pauta".
+Seja direto: frases curtas, sem enrolação.
+- resumo: 2 a 3 frases explicando o fato para quem não leu nada
+- por_que_importa: 1 a 2 frases sobre o impacto
+- angulos: exatamente 3 ângulos de vídeo
+- ganchos: 2 frases de abertura que prendem nos 3 primeiros segundos
+- perguntas: 2 dúvidas que o público provavelmente terá
+- busca_contexto: {dica_busca}
+- busca_social: termo de 2 a 4 palavras para buscar vídeos sobre o tema
+- hashtags: 3 a 5, sem o símbolo # e sem espaços{instrucoes_extras}"""
 
 FRENTES = {
     "ECONOMIA": {
@@ -208,9 +214,8 @@ FRENTES = {
         "criterios": "Priorize relevância para o público brasileiro, novidade e capacidade de gerar "
                      "curiosidade. Ignore fofoca, esporte, política partidária sem impacto econômico e "
                      "notas sem substância.",
-        "dica_busca": "consulta de 3 a 6 palavras para achar matérias de contexto/explicação",
-        "campos_extras": "",
-        "regras_extras": "",
+        "dica_busca": "consulta de 3 a 6 palavras para achar matérias que expliquem o tema",
+        "instrucoes_extras": "",
     },
     "STARTUPS": {
         "frente_desc": "cases de startups e empresas de tecnologia: o que a empresa faz, como "
@@ -218,27 +223,84 @@ FRENTES = {
         "criterios": "Priorize histórias sobre UMA empresa específica (startup ou scale-up, de "
                      "preferência brasileira ou com atuação no Brasil) num momento marcante: rodada de "
                      "investimento, virar unicórnio, aquisição, IPO, expansão internacional, lançamento "
-                     "relevante, virada no modelo de negócio, crise ou demissões. O vídeo vai explicar o "
-                     "case. Ignore notícias genéricas de tecnologia, big techs sem ângulo de case, "
-                     "eventos, prêmios, rankings, listas e artigos de opinião. Os ângulos devem explicar "
-                     "a empresa (como funciona, como ganha dinheiro, o que a diferencia), não só o fato.",
-        "dica_busca": "o nome da empresa, exatamente como aparece nas manchetes",
-        "campos_extras": """,
-    "empresa": "nome da empresa protagonista",
-    "raio_x": {
-      "o_que_faz": "em 1 a 2 frases simples: o problema que resolve e para quem",
-      "como_funciona": "em 1 a 2 frases: como o produto funciona na prática",
-      "como_ganha_dinheiro": "modelo de receita, em 1 frase",
-      "o_momento": "o fato novo desta notícia, com os números citados nas manchetes",
-      "a_checar": ["informação que precisa ser confirmada antes de gravar"]
-    },
-    "estrutura_video": ["Gancho: ...", "O problema: ...", "Como a empresa resolve: ...", "O que aconteceu agora: ...", "Fechamento: ..."]""",
-        "regras_extras": "\n\nRegras do raio_x: use só o que está nas manchetes ou o que você sabe "
-                         "com segurança sobre a empresa. NUNCA invente números, datas ou nomes. Se não "
-                         "tiver certeza de algo, escreva a confirmar no campo e coloque a dúvida em "
-                         "a_checar.",
+                     "relevante, virada no modelo de negócio, crise ou demissões. Ignore notícias "
+                     "genéricas de tecnologia, big techs sem ângulo de case, eventos, prêmios, rankings, "
+                     "listas e artigos de opinião.",
+        "dica_busca": "o nome da empresa, exatamente como aparece nas matérias",
+        "instrucoes_extras": """
+- empresa: nome da empresa protagonista
+- raio_x.o_que_faz: 1 a 2 frases simples, o problema que resolve e para quem
+- raio_x.como_funciona: 1 a 2 frases, como o produto funciona na prática
+- raio_x.como_ganha_dinheiro: 1 frase sobre o modelo de receita
+- raio_x.o_momento: o fato novo, com os números citados nas matérias
+- raio_x.a_checar: o que precisa ser confirmado antes de gravar
+- estrutura_video: 5 passos curtos (gancho, o problema, como a empresa resolve, o que aconteceu agora, fechamento)
+- os ângulos devem explicar a empresa (como funciona, como ganha dinheiro, o que a diferencia), não só o fato
+
+Regras do raio_x: use só o que está nas matérias ou o que você sabe com segurança sobre a empresa. \
+NUNCA invente números, datas ou nomes. Se não tiver certeza, escreva a confirmar no campo e coloque \
+a dúvida em a_checar.""",
     },
 }
+
+TXT = {"type": "string"}
+LISTA = {"type": "array", "items": {"type": "string"}}
+
+
+def schema_selecao(frente: str) -> dict:
+    props = {"codigos": LISTA, "titulo": TXT, "nota": {"type": "integer", "minimum": 1, "maximum": 10}}
+    obrig = ["codigos", "titulo", "nota"]
+    if frente == "STARTUPS":
+        props["empresa"] = TXT
+        obrig.append("empresa")
+    return {
+        "type": "object",
+        "properties": {"historias": {"type": "array", "items": {
+            "type": "object", "properties": props, "required": obrig}}},
+        "required": ["historias"],
+    }
+
+
+def schema_pauta(frente: str) -> dict:
+    props = {
+        "resumo": TXT, "por_que_importa": TXT, "angulos": LISTA, "ganchos": LISTA,
+        "perguntas": LISTA, "busca_contexto": TXT, "busca_social": TXT, "hashtags": LISTA,
+    }
+    obrig = list(props)
+    if frente == "STARTUPS":
+        props["empresa"] = TXT
+        props["raio_x"] = {"type": "object", "properties": {
+            "o_que_faz": TXT, "como_funciona": TXT, "como_ganha_dinheiro": TXT,
+            "o_momento": TXT, "a_checar": LISTA}}
+        props["estrutura_video"] = LISTA
+        obrig += ["empresa", "raio_x", "estrutura_video"]
+    return {"type": "object", "properties": props, "required": obrig}
+
+
+def chamar_claude(client, model: str, prompt: str, nome: str, schema: dict, max_tokens: int) -> dict:
+    """Faz uma chamada com resposta estruturada e devolve o dicionário. Tenta 2 vezes."""
+    ultimo_erro = None
+    for tentativa in range(2):
+        try:
+            msg = client.messages.create(
+                model=model,
+                max_tokens=max_tokens,
+                tools=[{"name": nome, "description": "Entrega o resultado.", "input_schema": schema}],
+                tool_choice={"type": "tool", "name": nome},
+                messages=[{"role": "user", "content": prompt}],
+            )
+            if getattr(msg, "stop_reason", "") == "max_tokens":
+                raise ValueError("resposta passou do limite de tamanho")
+            data = next((b.input for b in msg.content if getattr(b, "type", "") == "tool_use"), None)
+            if isinstance(data, str):
+                data = json.loads(data)
+            if not data:
+                raise ValueError("resposta vazia")
+            return data
+        except Exception as ex:  # noqa: BLE001
+            ultimo_erro = ex
+            time.sleep(0 if os.environ.get("TESTE") else 3 * (tentativa + 1))
+    raise RuntimeError(str(ultimo_erro))
 
 
 def claude_stories(items: list[dict], frente: str, janela: int, maximo: int) -> list[dict] | None:
@@ -248,86 +310,60 @@ def claude_stories(items: list[dict], frente: str, janela: int, maximo: int) -> 
         return None
     import anthropic
 
-    pool = sorted(items, key=lambda x: x["publicado"], reverse=True)[:160]
-    codes = {f"e{i}": it for i, it in enumerate(pool)}
-    lista = "\n".join(
-        f"[{c}] {it['titulo']} ({it['fonte']})"
-        + (f" — {it['resumo'][:160]}" if it["resumo"] else "")
-        for c, it in codes.items()
-    )
-    prompt = PROMPT.format(janela=janela, lista=lista, maximo=maximo, **FRENTES[frente])
     client = anthropic.Anthropic(api_key=key)
     model = os.environ.get("CLAUDE_MODEL") or "claude-haiku-5-5"
-    ferramenta = {
-        "name": "salvar_historias",
-        "description": "Salva as histórias escolhidas para o painel de pautas.",
-        "input_schema": schema_historias(frente),
-    }
-    for tentativa in range(2):
+    cfg = FRENTES[frente]
+
+    # Etapa 1: escolher e agrupar
+    pool = sorted(items, key=lambda x: x["publicado"], reverse=True)[:160]
+    codes = {f"e{i}": it for i, it in enumerate(pool)}
+    lista = "\n".join(f"[{c}] {it['titulo']} ({it['fonte']})" for c, it in codes.items())
+    prompt = PROMPT_SELECAO.format(
+        frente_desc=cfg["frente_desc"], criterios=cfg["criterios"], janela=janela,
+        lista=lista, maximo=maximo,
+        campo_empresa=" e o nome da empresa protagonista" if frente == "STARTUPS" else "",
+    )
+    try:
+        sel = chamar_claude(client, model, prompt, "selecionar_historias", schema_selecao(frente), 4000)
+    except Exception as ex:  # noqa: BLE001
+        log(f"  erro no Claude ao escolher histórias: {ex}")
+        return None
+    escolhidas = []
+    for h in sel.get("historias", [])[:maximo]:
+        membros = [codes[c] for c in h.get("codigos", []) if c in codes]
+        if membros:
+            escolhidas.append((h, membros))
+    if not escolhidas:
+        log("  o Claude não escolheu nenhuma história válida")
+        return None
+
+    # Etapa 2: uma pauta por história, em paralelo
+    def montar(par):
+        h, membros = par
+        materias = "\n".join(
+            f"- {m['titulo']} ({m['fonte']})" + (f": {m['resumo'][:300]}" if m["resumo"] else "")
+            for m in membros
+        )
+        p = PROMPT_PAUTA.format(
+            frente_desc=cfg["frente_desc"], titulo=h["titulo"], materias=materias,
+            dica_busca=cfg["dica_busca"], instrucoes_extras=cfg["instrucoes_extras"],
+        )
         try:
-            msg = client.messages.create(
-                model=model,
-                max_tokens=16000,
-                tools=[ferramenta],
-                tool_choice={"type": "tool", "name": "salvar_historias"},
-                messages=[{"role": "user", "content": prompt}],
-            )
-            if getattr(msg, "stop_reason", "") == "max_tokens":
-                log("  aviso: resposta do Claude chegou no limite de tamanho")
-            data = next(
-                (b.input for b in msg.content if getattr(b, "type", "") == "tool_use"), None
-            )
-            if isinstance(data, str):
-                data = json.loads(data)
-            if not data or not data.get("historias"):
-                raise ValueError("o Claude não devolveu histórias")
-            stories = []
-            for h in data["historias"]:
-                membros = [codes[c] for c in h.get("codigos", []) if c in codes]
-                if not membros:
-                    continue
-                stories.append(build_story(membros, frente, h))
-            if not stories:
-                raise ValueError("nenhuma história com códigos válidos")
-            return stories
+            pauta = chamar_claude(client, model, p, "montar_pauta", schema_pauta(frente), 3000)
         except Exception as ex:  # noqa: BLE001
-            log(f"  erro no Claude (tentativa {tentativa + 1}): {ex}")
-            time.sleep(5)
-    return None
+            log(f"  pauta falhou para '{h['titulo'][:50]}': {ex}")
+            pauta = {"busca_contexto": h.get("empresa") or h["titulo"],
+                     "busca_social": h.get("empresa") or h["titulo"][:40]}
+        pauta = {**pauta, "titulo": h["titulo"], "nota": h.get("nota")}
+        if h.get("empresa") and not pauta.get("empresa"):
+            pauta["empresa"] = h["empresa"]
+        return build_story(membros, frente, pauta)
 
-
-def schema_historias(frente: str) -> dict:
-    txt = {"type": "string"}
-    lista = {"type": "array", "items": {"type": "string"}}
-    props = {
-        "codigos": lista, "titulo": txt, "resumo": txt, "por_que_importa": txt,
-        "nota": {"type": "integer", "minimum": 1, "maximum": 10},
-        "angulos": lista, "ganchos": lista, "perguntas": lista,
-        "busca_contexto": txt, "busca_social": txt, "hashtags": lista,
-    }
-    obrig = ["codigos", "titulo", "resumo", "nota", "angulos", "ganchos",
-             "busca_contexto", "busca_social", "hashtags"]
-    if frente == "STARTUPS":
-        props["empresa"] = txt
-        props["raio_x"] = {
-            "type": "object",
-            "properties": {
-                "o_que_faz": txt, "como_funciona": txt, "como_ganha_dinheiro": txt,
-                "o_momento": txt, "a_checar": lista,
-            },
-        }
-        props["estrutura_video"] = lista
-        obrig += ["empresa", "raio_x", "estrutura_video"]
-    return {
-        "type": "object",
-        "properties": {
-            "historias": {
-                "type": "array",
-                "items": {"type": "object", "properties": props, "required": obrig},
-            }
-        },
-        "required": ["historias"],
-    }
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        stories = list(ex.map(montar, escolhidas))
+    ok = sum(1 for s in stories if s["angulos"])
+    log(f"  pautas completas: {ok} de {len(stories)}")
+    return stories
 
 
 def heuristic_stories(items: list[dict], frente: str, maximo: int) -> list[dict]:

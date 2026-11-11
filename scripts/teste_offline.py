@@ -55,43 +55,55 @@ def fake_fetch(url):
 
 
 class FakeClient:
+    chamadas = []
+
     def __init__(self, **k):
         self.messages = self
 
     def create(self, **k):
+        nome = k["tool_choice"]["name"]
         p = k["messages"][0]["content"]
         econ = "economia, mercado" in p
-        h = [{
-            "codigos": ["e0", "e1", "e2"] if econ else ["e0", "e1"],
-            "titulo": "Copom mantém a Selic e o dólar reage" if econ else "Fintech de crédito para PMEs capta série B",
-            "resumo": "Resumo fictício de teste em duas frases. Serve só para ver o layout.",
-            "por_que_importa": "Impacto fictício para teste.",
-            "nota": 9,
-            "angulos": ["Ângulo um", "Ângulo dois", "Ângulo três"],
-            "ganchos": ["Gancho de abertura de exemplo?", "Outro gancho"],
-            "perguntas": ["Dúvida comum?"],
-            "busca_contexto": "selic como funciona" if econ else "série b startup",
-            "busca_social": "selic hoje" if econ else "fintech pme",
-            "hashtags": ["selic", "economia"] if econ else ["startups", "fintech"],
-        }]
-        if not econ:
-            h[0].update({
-                "empresa": "Fintech Exemplo",
-                "raio_x": {
-                    "o_que_faz": "Empresta dinheiro para pequenas empresas que os bancos costumam recusar.",
-                    "como_funciona": "Analisa as vendas da empresa em tempo real para decidir o crédito.",
-                    "como_ganha_dinheiro": "Juros sobre os empréstimos.",
-                    "o_momento": "Captou uma rodada série B (valor a confirmar).",
-                    "a_checar": ["Valor exato da rodada", "Quem liderou o investimento"],
-                },
-                "estrutura_video": ["Gancho: pergunta provocativa", "O problema: crédito caro para PME",
-                                    "Como a empresa resolve", "O que aconteceu agora", "Fechamento: o que vem depois"],
-            })
-        assert k["tool_choice"]["name"] == "salvar_historias"
-        props = k["tools"][0]["input_schema"]["properties"]["historias"]["items"]["properties"]
-        assert ("raio_x" in props) == (not econ)
+        FakeClient.chamadas.append(nome)
+        assert k["max_tokens"] <= 4000
+        if nome == "selecionar_historias":
+            if econ:
+                h = [{"codigos": ["e0", "e1", "e2"], "titulo": "Copom mantém a Selic e o dólar reage", "nota": 9},
+                     {"codigos": ["e3", "e4"], "titulo": "Inflação de outubro desacelera", "nota": 7}]
+            else:
+                h = [{"codigos": ["e0", "e1"], "titulo": "Fintech de crédito para PMEs capta série B",
+                      "nota": 8, "empresa": "Fintech Exemplo"}]
+            out = {"historias": h}
+        else:
+            if "Inflação de outubro" in p:  # simula uma pauta que falha
+                return types.SimpleNamespace(stop_reason="max_tokens", content=[])
+            out = {
+                "resumo": "Resumo fictício de teste em duas frases. Serve só para ver o layout.",
+                "por_que_importa": "Impacto fictício para teste.",
+                "angulos": ["Ângulo um", "Ângulo dois", "Ângulo três"],
+                "ganchos": ["Gancho de abertura de exemplo?", "Outro gancho"],
+                "perguntas": ["Dúvida comum?"],
+                "busca_contexto": "selic como funciona" if econ else "Fintech Exemplo",
+                "busca_social": "selic hoje" if econ else "fintech pme",
+                "hashtags": ["selic", "economia"] if econ else ["startups", "fintech"],
+            }
+            if not econ:
+                assert "raio_x" in k["tools"][0]["input_schema"]["properties"]
+                out.update({
+                    "empresa": "Fintech Exemplo",
+                    "raio_x": {
+                        "o_que_faz": "Empresta dinheiro para pequenas empresas que os bancos costumam recusar.",
+                        "como_funciona": "Analisa as vendas da empresa em tempo real para decidir o crédito.",
+                        "como_ganha_dinheiro": "Juros sobre os empréstimos.",
+                        "o_momento": "Captou uma rodada série B (valor a confirmar).",
+                        "a_checar": ["Valor exato da rodada", "Quem liderou o investimento"],
+                    },
+                    "estrutura_video": ["Gancho: pergunta provocativa", "O problema: crédito caro para PME",
+                                        "Como a empresa resolve", "O que aconteceu agora",
+                                        "Fechamento: o que vem depois"],
+                })
         return types.SimpleNamespace(stop_reason="tool_use", content=[
-            types.SimpleNamespace(type="tool_use", name="salvar_historias", input={"historias": h})])
+            types.SimpleNamespace(type="tool_use", name=nome, input=out)])
 
 
 collect.fetch_feed = fake_fetch
@@ -110,4 +122,10 @@ if __name__ == "__main__":
         print(f, len(ss), [s["titulo"] for s in ss])
         assert all(s["materias"] for s in ss)
     assert "velha" not in json.dumps(d), "filtro de 50h falhou"
+    if modo == "claude":
+        print("chamadas ao Claude:", FakeClient.chamadas)
+        econ = {s["titulo"]: s for s in d["frentes"]["ECONOMIA"]}
+        assert econ["Copom mantém a Selic e o dólar reage"]["angulos"], "pauta boa sumiu"
+        assert not econ["Inflação de outubro desacelera"]["angulos"], "falha não foi isolada"
+        assert d["frentes"]["STARTUPS"][0]["raio_x"]["a_checar"]
     print("OK")
