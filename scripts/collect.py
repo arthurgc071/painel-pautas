@@ -180,9 +180,7 @@ Abaixo estão matérias publicadas nas últimas {janela} horas. Cada linha tem u
 
 Tarefa:
 1. Agrupe as matérias que tratam do MESMO fato em uma "história". Matérias sem relação ficam sozinhas.
-2. Escolha as até {maximo} histórias com MAIOR potencial de virar vídeo explicativo (relevância para o \
-público brasileiro, novidade, capacidade de gerar curiosidade). Ignore fofoca, esporte, \
-política partidária sem impacto econômico, e notas sem substância.
+2. Escolha as até {maximo} histórias com MAIOR potencial de virar vídeo. {criterios}
 3. Para cada história escolhida, escreva em português do Brasil.
 
 Responda APENAS com JSON válido, sem texto antes ou depois, neste formato:
@@ -191,22 +189,55 @@ Responda APENAS com JSON válido, sem texto antes ou depois, neste formato:
     "codigos": ["e3", "e17"],
     "titulo": "título curto e claro da história, máx. 90 caracteres",
     "resumo": "2 a 3 frases explicando o fato, para quem não leu nada",
-    "por_que_importa": "1 a 2 frases sobre o impacto na vida das pessoas ou no mercado",
+    "por_que_importa": "1 a 2 frases sobre o impacto",
     "nota": 8,
     "angulos": ["ângulo de vídeo 1", "ângulo 2", "ângulo 3"],
     "ganchos": ["frase de abertura que prende nos 3 primeiros segundos", "outra opção"],
     "perguntas": ["dúvida que o público provavelmente tem", "outra dúvida"],
-    "busca_contexto": "consulta de 3 a 6 palavras para achar matérias de contexto/explicação",
+    "busca_contexto": "{dica_busca}",
     "busca_social": "termo curto de 2 a 4 palavras para buscar vídeos sobre o tema",
-    "hashtags": ["tag1", "tag2", "tag3"]
+    "hashtags": ["tag1", "tag2", "tag3"]{campos_extras}
   }}
 ]}}
 
-"nota" vai de 1 a 10 e mede o potencial de virar um bom vídeo. Hashtags sem o símbolo #, sem espaços."""
+"nota" vai de 1 a 10 e mede o potencial de virar um bom vídeo. Hashtags sem o símbolo #, sem espaços.{regras_extras}"""
 
-FRENTE_DESC = {
-    "ECONOMIA": "economia, mercado financeiro, juros, inflação e finanças",
-    "STARTUPS": "startups, inovação, tecnologia, negócios e cases de empresas",
+FRENTES = {
+    "ECONOMIA": {
+        "frente_desc": "economia, mercado financeiro, juros, inflação e finanças",
+        "criterios": "Priorize relevância para o público brasileiro, novidade e capacidade de gerar "
+                     "curiosidade. Ignore fofoca, esporte, política partidária sem impacto econômico e "
+                     "notas sem substância.",
+        "dica_busca": "consulta de 3 a 6 palavras para achar matérias de contexto/explicação",
+        "campos_extras": "",
+        "regras_extras": "",
+    },
+    "STARTUPS": {
+        "frente_desc": "cases de startups e empresas de tecnologia: o que a empresa faz, como "
+                       "funciona e por que o momento dela importa",
+        "criterios": "Priorize histórias sobre UMA empresa específica (startup ou scale-up, de "
+                     "preferência brasileira ou com atuação no Brasil) num momento marcante: rodada de "
+                     "investimento, virar unicórnio, aquisição, IPO, expansão internacional, lançamento "
+                     "relevante, virada no modelo de negócio, crise ou demissões. O vídeo vai explicar o "
+                     "case. Ignore notícias genéricas de tecnologia, big techs sem ângulo de case, "
+                     "eventos, prêmios, rankings, listas e artigos de opinião. Os ângulos devem explicar "
+                     "a empresa (como funciona, como ganha dinheiro, o que a diferencia), não só o fato.",
+        "dica_busca": "o nome da empresa, exatamente como aparece nas manchetes",
+        "campos_extras": """,
+    "empresa": "nome da empresa protagonista",
+    "raio_x": {
+      "o_que_faz": "em 1 a 2 frases simples: o problema que resolve e para quem",
+      "como_funciona": "em 1 a 2 frases: como o produto funciona na prática",
+      "como_ganha_dinheiro": "modelo de receita, em 1 frase",
+      "o_momento": "o fato novo desta notícia, com os números citados nas manchetes",
+      "a_checar": ["informação que precisa ser confirmada antes de gravar"]
+    },
+    "estrutura_video": ["Gancho: ...", "O problema: ...", "Como a empresa resolve: ...", "O que aconteceu agora: ...", "Fechamento: ..."]""",
+        "regras_extras": "\n\nRegras do raio_x: use só o que está nas manchetes ou o que você sabe "
+                         "com segurança sobre a empresa. NUNCA invente números, datas ou nomes. Se não "
+                         "tiver certeza de algo, escreva \"a confirmar\" no campo e coloque a dúvida em "
+                         "\"a_checar\".",
+    },
 }
 
 
@@ -224,9 +255,7 @@ def claude_stories(items: list[dict], frente: str, janela: int, maximo: int) -> 
         + (f" — {it['resumo'][:160]}" if it["resumo"] else "")
         for c, it in codes.items()
     )
-    prompt = PROMPT.format(
-        frente_desc=FRENTE_DESC[frente], janela=janela, lista=lista, maximo=maximo
-    )
+    prompt = PROMPT.format(janela=janela, lista=lista, maximo=maximo, **FRENTES[frente])
     client = anthropic.Anthropic(api_key=key)
     model = os.environ.get("CLAUDE_MODEL") or "claude-haiku-5-5"
     for tentativa in range(2):
@@ -290,6 +319,9 @@ def build_story(membros: list[dict], frente: str, h: dict) -> dict:
         "hashtags": [re.sub(r"[#\s]", "", t) for t in h.get("hashtags", [])][:6],
         "busca_contexto": h.get("busca_contexto", ""),
         "busca_social": h.get("busca_social", ""),
+        "empresa": h.get("empresa", ""),
+        "raio_x": h.get("raio_x") or {},
+        "estrutura_video": h.get("estrutura_video", []),
         "primeira_publicacao": membros[0]["publicado"],
         "ultima_publicacao": membros[-1]["publicado"],
         "materias": [
@@ -304,11 +336,15 @@ def build_story(membros: list[dict], frente: str, h: dict) -> dict:
 # ---------------------------------------------------------------- 3. complementos
 
 def add_context(story: dict) -> None:
-    q = story["busca_contexto"] or story["titulo"]
+    if story.get("empresa"):
+        # Para cases: matérias sobre a empresa no último ano (histórico, rodadas anteriores, perfil)
+        q, dias = '"' + story["empresa"] + '"', 365
+    else:
+        q, dias = story["busca_contexto"] or story["titulo"], 30
     proprios = {m["link"] for m in story["materias"]}
     proprios_tok = [norm_tokens(m["titulo"]) for m in story["materias"]]
     try:
-        feed = fetch_feed(google_news_url(q, 30))
+        feed = fetch_feed(google_news_url(q, dias))
         out = []
         for e in feed.entries:
             title, fonte = split_google_title(clean_text(e.get("title"), 300), "")
@@ -326,7 +362,7 @@ def add_context(story: dict) -> None:
                 "fonte": src_title or fonte,
                 "publicado": pub.isoformat() if pub else None,
             })
-            if len(out) >= 5:
+            if len(out) >= (6 if story.get("empresa") else 5):
                 break
         story["contexto"] = out
     except Exception as ex:  # noqa: BLE001

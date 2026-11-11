@@ -74,6 +74,19 @@ class FakeClient:
             "busca_social": "selic hoje" if econ else "fintech pme",
             "hashtags": ["selic", "economia"] if econ else ["startups", "fintech"],
         }]
+        if not econ:
+            h[0].update({
+                "empresa": "Fintech Exemplo",
+                "raio_x": {
+                    "o_que_faz": "Empresta dinheiro para pequenas empresas que os bancos costumam recusar.",
+                    "como_funciona": "Analisa as vendas da empresa em tempo real para decidir o crédito.",
+                    "como_ganha_dinheiro": "Juros sobre os empréstimos.",
+                    "o_momento": "Captou uma rodada série B (valor a confirmar).",
+                    "a_checar": ["Valor exato da rodada", "Quem liderou o investimento"],
+                },
+                "estrutura_video": ["Gancho: pergunta provocativa", "O problema: crédito caro para PME",
+                                    "Como a empresa resolve", "O que aconteceu agora", "Fechamento: o que vem depois"],
+            })
         return types.SimpleNamespace(content=[types.SimpleNamespace(type="text", text=json.dumps({"historias": h}))])
 
 
