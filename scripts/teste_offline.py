@@ -87,7 +87,11 @@ class FakeClient:
                 "estrutura_video": ["Gancho: pergunta provocativa", "O problema: crédito caro para PME",
                                     "Como a empresa resolve", "O que aconteceu agora", "Fechamento: o que vem depois"],
             })
-        return types.SimpleNamespace(content=[types.SimpleNamespace(type="text", text=json.dumps({"historias": h}))])
+        assert k["tool_choice"]["name"] == "salvar_historias"
+        props = k["tools"][0]["input_schema"]["properties"]["historias"]["items"]["properties"]
+        assert ("raio_x" in props) == (not econ)
+        return types.SimpleNamespace(stop_reason="tool_use", content=[
+            types.SimpleNamespace(type="tool_use", name="salvar_historias", input={"historias": h})])
 
 
 collect.fetch_feed = fake_fetch

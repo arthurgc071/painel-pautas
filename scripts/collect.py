@@ -183,7 +183,7 @@ Tarefa:
 2. Escolha as até {maximo} histórias com MAIOR potencial de virar vídeo. {criterios}
 3. Para cada história escolhida, escreva em português do Brasil.
 
-Responda APENAS com JSON válido, sem texto antes ou depois, neste formato:
+Entregue o resultado chamando a ferramenta "salvar_historias". Cada história segue este modelo:
 {{"historias": [
   {{
     "codigos": ["e3", "e17"],
@@ -235,8 +235,8 @@ FRENTES = {
     "estrutura_video": ["Gancho: ...", "O problema: ...", "Como a empresa resolve: ...", "O que aconteceu agora: ...", "Fechamento: ..."]""",
         "regras_extras": "\n\nRegras do raio_x: use só o que está nas manchetes ou o que você sabe "
                          "com segurança sobre a empresa. NUNCA invente números, datas ou nomes. Se não "
-                         "tiver certeza de algo, escreva \"a confirmar\" no campo e coloque a dúvida em "
-                         "\"a_checar\".",
+                         "tiver certeza de algo, escreva a confirmar no campo e coloque a dúvida em "
+                         "a_checar.",
     },
 }
 
@@ -258,26 +258,76 @@ def claude_stories(items: list[dict], frente: str, janela: int, maximo: int) -> 
     prompt = PROMPT.format(janela=janela, lista=lista, maximo=maximo, **FRENTES[frente])
     client = anthropic.Anthropic(api_key=key)
     model = os.environ.get("CLAUDE_MODEL") or "claude-haiku-5-5"
+    ferramenta = {
+        "name": "salvar_historias",
+        "description": "Salva as histórias escolhidas para o painel de pautas.",
+        "input_schema": schema_historias(frente),
+    }
     for tentativa in range(2):
         try:
             msg = client.messages.create(
                 model=model,
-                max_tokens=12000,
+                max_tokens=16000,
+                tools=[ferramenta],
+                tool_choice={"type": "tool", "name": "salvar_historias"},
                 messages=[{"role": "user", "content": prompt}],
             )
-            text = "".join(b.text for b in msg.content if getattr(b, "type", "") == "text")
-            data = json.loads(text[text.find("{"): text.rfind("}") + 1])
+            if getattr(msg, "stop_reason", "") == "max_tokens":
+                log("  aviso: resposta do Claude chegou no limite de tamanho")
+            data = next(
+                (b.input for b in msg.content if getattr(b, "type", "") == "tool_use"), None
+            )
+            if isinstance(data, str):
+                data = json.loads(data)
+            if not data or not data.get("historias"):
+                raise ValueError("o Claude não devolveu histórias")
             stories = []
-            for h in data.get("historias", []):
+            for h in data["historias"]:
                 membros = [codes[c] for c in h.get("codigos", []) if c in codes]
                 if not membros:
                     continue
                 stories.append(build_story(membros, frente, h))
+            if not stories:
+                raise ValueError("nenhuma história com códigos válidos")
             return stories
         except Exception as ex:  # noqa: BLE001
             log(f"  erro no Claude (tentativa {tentativa + 1}): {ex}")
             time.sleep(5)
     return None
+
+
+def schema_historias(frente: str) -> dict:
+    txt = {"type": "string"}
+    lista = {"type": "array", "items": {"type": "string"}}
+    props = {
+        "codigos": lista, "titulo": txt, "resumo": txt, "por_que_importa": txt,
+        "nota": {"type": "integer", "minimum": 1, "maximum": 10},
+        "angulos": lista, "ganchos": lista, "perguntas": lista,
+        "busca_contexto": txt, "busca_social": txt, "hashtags": lista,
+    }
+    obrig = ["codigos", "titulo", "resumo", "nota", "angulos", "ganchos",
+             "busca_contexto", "busca_social", "hashtags"]
+    if frente == "STARTUPS":
+        props["empresa"] = txt
+        props["raio_x"] = {
+            "type": "object",
+            "properties": {
+                "o_que_faz": txt, "como_funciona": txt, "como_ganha_dinheiro": txt,
+                "o_momento": txt, "a_checar": lista,
+            },
+        }
+        props["estrutura_video"] = lista
+        obrig += ["empresa", "raio_x", "estrutura_video"]
+    return {
+        "type": "object",
+        "properties": {
+            "historias": {
+                "type": "array",
+                "items": {"type": "object", "properties": props, "required": obrig},
+            }
+        },
+        "required": ["historias"],
+    }
 
 
 def heuristic_stories(items: list[dict], frente: str, maximo: int) -> list[dict]:
