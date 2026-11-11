@@ -27,19 +27,22 @@ ECONOMIA:
     google: "Selic OR inflação OR IPCA OR Copom OR PIB OR câmbio OR Ibovespa"
 
 STARTUPS:
+  # Foco: cases de empresas (rodadas, unicórnios, aquisições, expansão, viradas)
   - nome: NeoFeed
-    google: "site:neofeed.com.br"
+    google: "site:neofeed.com.br startup OR rodada OR aporte OR fundador"
   - nome: Startups.com.br
     rss: https://startups.com.br/feed/
   - nome: Pipeline (Valor)
     google: "site:pipelinevalor.globo.com"
-  - nome: Exame Inovação
-    google: "site:exame.com startups OR inovação"
-  - nome: Brazil Journal - tech
-    google: "site:braziljournal.com startup OR tecnologia"
-  - nome: TechCrunch
-    rss: https://techcrunch.com/feed/
-  - nome: Google News - Startups BR
-    google: "startup rodada OR aporte OR \"série A\" OR unicórnio OR fintech"
-  - nome: Google News - IA e tech
-    google: "inteligência artificial empresa lançamento OR OpenAI OR Anthropic OR Nvidia"
+  - nome: Brazil Journal - startups
+    google: "site:braziljournal.com startup OR rodada OR unicórnio OR fundador"
+  - nome: Exame - startups
+    google: "site:exame.com startup rodada OR aporte OR unicórnio OR fundador"
+  - nome: Google News - Rodadas
+    google: "startup (\"série A\" OR \"série B\" OR \"série C\" OR \"série D\" OR aporte OR capta OR levanta)"
+  - nome: Google News - Unicórnios e aquisições
+    google: "startup (unicórnio OR aquisição OR adquire OR IPO OR valuation)"
+  - nome: Google News - Expansão e viradas
+    google: "startup brasileira (expansão OR internacional OR lucro OR demissões OR receita)"
+  - nome: TechCrunch - América Latina
+    google: "site:techcrunch.com Brazil OR \"Latin America\" startup"
